@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROM Tool - Project Lead Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f7fa;
+            color: #2d3748;
+            line-height: 1.6;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .header .subtitle {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-top: 0.25rem;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        .project-header {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .project-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .info-label {
+            font-size: 0.75rem;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.25rem;
+        }
+        
+        .info-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        .project-lead-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #667eea;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #48bb78 0%, #38a169 100%);
+            transition: width 0.3s ease;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .tab {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+            color: #718096;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .tab:hover {
+            color: #667eea;
+        }
+        
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+            font-weight: 600;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .badge.complete {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+        
+        .badge.progress {
+            background: #fef5e7;
+            color: #975a16;
+        }
+        
+        .badge.pending {
+            background: #e0e7ff;
+            color: #434190;
+        }
+        
+        .badge.not-started {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+        
+        .module-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .module-item {
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        
+        .module-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+        }
+        
+        .module-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .module-name {
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        .module-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: #718096;
+        }
+        
+        .assumption-item {
+            padding: 0.75rem;
+            background: #fef5e7;
+            border-left: 3px solid #f59e0b;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .assumption-id {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #92400e;
+            margin-bottom: 0.25rem;
+        }
+        
+        .assumption-text {
+            font-size: 0.9rem;
+            color: #78350f;
+        }
+        
+        .approval-stage {
+            padding: 1.5rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+        
+        .approval-stage.active {
+            border-color: #667eea;
+            background: #f7fafc;
+        }
+        
+        .approval-stage.completed {
+            border-color: #48bb78;
+            background: #f0fff4;
+        }
+        
+        .stage-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .stage-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .stage-icon.completed {
+            background: #48bb78;
+            color: white;
+        }
+        
+        .stage-icon.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .stage-icon.pending {
+            background: #e2e8f0;
+            color: #718096;
+        }
+        
+        .stage-title {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        .approval-items {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-left: 3.5rem;
+        }
+        
+        .approval-user {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.5rem;
+            background: white;
+            border-radius: 6px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-success {
+            background: #48bb78;
+            color: white;
+        }
+        
+        .btn-warning {
+            background: #f59e0b;
+            color: white;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .stat-card {
+            padding: 1rem;
+            background: #f7fafc;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2d3748;
+        }
+        
+        .stat-label {
+            font-size: 0.75rem;
+            color: #718096;
+            margin-top: 0.25rem;
+        }
+        
+        .timeline-alert {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            background: #fff5f5;
+            border-left: 4px solid #f56565;
+            border-radius: 4px;
+            margin-top: 1rem;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>ROM Tool - Modular Quoting System</h1>
+        <div class="subtitle">Project Lead Dashboard</div>
+    </div>
+    
+    <div class="container">
+        <!-- Project Header -->
+        <div class="project-header">
+            <div class="project-info">
+                <div class="info-item">
+                    <div class="info-label">Project</div>
+                    <div class="info-value">ABC Warehouse Automation</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Customer</div>
+                    <div class="info-value">ABC Distribution Inc.</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Project Lead</div>
+                    <div class="info-value">
+                        <span class="project-lead-badge">
+                            <span>👤</span>
+                            <span>John Smith (Mech. Engineer)</span>
+                        </span>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Timeline</div>
+                    <div class="info-value">48 hours remaining</div>
+                </div>
+            </div>
+            
+            <div class="info-label">Overall Progress</div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 65%;"></div>
+            </div>
+            
+            <div class="timeline-alert">
+                <span>⚠️</span>
+                <span><strong>Action Required:</strong> Robotic Systems module past deadline. Contact Mike Davis.</span>
+            </div>
+        </div>
+        
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('modules')">Module Status</button>
+            <button class="tab" onclick="showTab('assumptions')">Assumptions</button>
+            <button class="tab" onclick="showTab('requirements')">Requirements</button>
+            <button class="tab" onclick="showTab('approvals')">Approval Workflow</button>
+        </div>
+        
+        <!-- Module Status Tab -->
+        <div id="tab-modules" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Module Assignments</div>
+                    <button class="btn btn-primary">+ Assign Module</button>
+                </div>
+                
+                <div class="module-list">
+                    <div class="module-item">
+                        <div class="module-header">
+                            <div class="module-name">✅ Operational Data & Requirements</div>
+                            <span class="badge complete">Complete</span>
+                        </div>
+                        <div class="module-meta">
+                            <span>👤 Sarah Johnson (Sales)</span>
+                            <span>•</span>
+                            <span>Completed 2 days ago</span>
+                            <span>•</span>
+                            <span>Source: Customer Provided</span>
+                        </div>
+                    </div>
+                    
+                    <div class="module-item">
+                        <div class="module-header">
+                            <div class="module-name">🟡 Robotic Systems</div>
+                            <span class="badge progress">In Progress</span>
+                        </div>
+                        <div class="module-meta">
+                            <span>👤 Mike Davis (Solutions Eng)</span>
+                            <span>•</span>
+                            <span>Deadline: Yesterday</span>
+                            <span>•</span>
+                            <span>Source: Vendor Buyout</span>
+                        </div>
+                    </div>
+                    
+                    <div class="module-item">
+                        <div class="module-header">
+                            <div class="module-name">✅ Storage Infrastructure</div>
+                            <span class="badge complete">Complete</span>
+                        </div>
+                        <div class="module-meta">
+                            <span>👤 John Smith (Mech. Eng)</span>
+                            <span>•</span>
+                            <span>Completed 1 day ago</span>
+                            <span>•</span>
+                            <span>Source: Hybrid</span>
+                        </div>
+                    </div>
+                    
+                    <div class="module-item">
+                        <div class="module-header">
+                            <div class="module-name">✅ Conveyance Systems</div>
+                            <span class="badge complete">Complete</span>
+                        </div>
+                        <div class="module-meta">
+                            <span>👤 John Smith (Mech. Eng)</span>
+                            <span>•</span>
+                            <span>Completed 1 day ago</span>
+                            <span>•</span>
+                            <span>Source: In-House Design</span>
+                        </div>
+                    </div>
+                    
+                    <div class="module-item">
+                        <div class="module-header">
+                            <div class="module-name">🔵 Controls & Electrical</div>
+                            <span class="badge pending">Pending</span>
+                        </div>
+                        <div class="module-meta">
+                            <span>👤 Lisa Chen (Controls Eng)</span>
+                            <span>•</span>
+                            <span>Deadline: Tomorrow</span>
+                            <span>•</span>
+                            <span>Source: Controls Integrator Buyout</span>
+                        </div>
+                    </div>
+                    
+                    <div class="module-item">
+                        <div class="module-header">
+                            <div class="module-name">✅ Software Systems</div>
+                            <span class="badge complete">Complete</span>
+                        </div>
+                        <div class="module-meta">
+                            <span>👤 Tom Wilson (IT/Software)</span>
+                            <span>•</span>
+                            <span>Completed 1 day ago</span>
+                            <span>•</span>
+                            <span>Source: COTS Buyout</span>
+                        </div>
+                    </div>
+                    
+                    <div class="module-item">
+                        <div class="module-header">
+                            <div class="module-name">✅ Implementation Services</div>
+                            <span class="badge complete">Complete</span>
+                        </div>
+                        <div class="module-meta">
+                            <span>👤 Emily Rodriguez (PM)</span>
+                            <span>•</span>
+                            <span>Completed 1 day ago</span>
+                            <span>•</span>
+                            <span>Source: Hybrid</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid">
+                <div class="card">
+                    <div class="card-title" style="margin-bottom: 1rem;">Cost Summary</div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value">$2.1M</div>
+                            <div class="stat-label">Low Estimate</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">$2.5M</div>
+                            <div class="stat-label">High Estimate</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">7.5/10</div>
+                            <div class="stat-label">Confidence</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">8-10</div>
+                            <div class="stat-label">Months</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title" style="margin-bottom: 1rem;">Quick Stats</div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value">8</div>
+                            <div class="stat-label">Assumptions</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">5</div>
+                            <div class="stat-label">Requirements</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">5/7</div>
+                            <div class="stat-label">Modules Done</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">0/3</div>
+                            <div class="stat-label">Mgr Approvals</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Assumptions Tab -->
+        <div id="tab-assumptions" class="tab-content hidden">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Project Assumptions (8 Total)</div>
+                    <button class="btn btn-primary">+ Add Assumption</button>
+                </div>
+                
+                <div style="margin-bottom: 1rem;">
+                    <div class="assumption-item">
+                        <div class="assumption-id">A-001 • HIGH IMPACT • Operational</div>
+                        <div class="assumption-text">Peak throughput of 5,000 units/hour based on customer estimate. Not validated with order history data.</div>
+                    </div>
+                    
+                    <div class="assumption-item">
+                        <div class="assumption-id">A-002 • MEDIUM IMPACT • Operational</div>
+                        <div class="assumption-text">Two-shift operation (16 hours/day, 5 days/week). Customer indicated possible 24/7 in future.</div>
+                    </div>
+                    
+                    <div class="assumption-item">
+                        <div class="assumption-id">A-003 • HIGH IMPACT • Commercial</div>
+                        <div class="assumption-text">30% volume growth over 3 years. Based on industry average, not customer-specific forecast.</div>
+                    </div>
+                    
+                    <div class="assumption-item" style="background: #fef5e7; border-left-color: #f59e0b;">
+                        <div class="assumption-id">A-004 • HIGH IMPACT • Technical</div>
+                        <div class="assumption-text">Existing facility has adequate 480V 3-phase power available. REQUIRES CLARIFICATION from customer.</div>
+                    </div>
+                    
+                    <div class="assumption-item">
+                        <div class="assumption-id">A-005 • MEDIUM IMPACT • Technical</div>
+                        <div class="assumption-text">Floor loading capacity of 500 PSF minimum assumed based on typical warehouse construction.</div>
+                    </div>
+                    
+                    <div class="assumption-item">
+                        <div class="assumption-id">A-006 • LOW IMPACT • Commercial</div>
+                        <div class="assumption-text">Robot vendor can deliver within 6-month lead time. Confirmed with preliminary inquiry.</div>
+                    </div>
+                    
+                    <div class="assumption-item">
+                        <div class="assumption-id">A-007 • HIGH IMPACT • Risk</div>
+                        <div class="assumption-text">No seismic zone requirements beyond standard building code. Customer location needs verification.</div>
+                    </div>
+                    
+                    <div class="assumption-item">
+                        <div class="assumption-id">A-008 • MEDIUM IMPACT • Technical</div>
+                        <div class="assumption-text">Existing WMS can provide real-time order release API. Integration complexity TBD pending API documentation.</div>
+                    </div>
+                </div>
+                
+                <div style="padding: 1rem; background: #fff5f5; border-radius: 8px; border-left: 4px solid #f56565;">
+                    <strong>Clarifications Needed:</strong> A-004 (power availability) and A-007 (seismic requirements) require customer confirmation before finalizing quote.
+                </div>
+            </div>
+        </div>
+        
+        <!-- Requirements Tab -->
+        <div id="tab-requirements" class="tab-content hidden">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Customer Requirements (5 Total)</div>
+                    <button class="btn btn-primary">+ Add Requirement</button>
+                </div>
+                
+                <div class="module-list">
+                    <div class="module-item" style="border-color: #48bb78;">
+                        <div class="module-header">
+                            <div class="module-name">R-001: Order Accuracy</div>
+                            <span class="badge complete">Met</span>
+                        </div>
+                        <div style="margin-top: 0.5rem; color: #4a5568;">
+                            <strong>Requirement:</strong> Must achieve 99.5% order accuracy<br>
+                            <strong>Compliance:</strong> Proposed system targets 99.7% with barcode verification at all pick points
+                        </div>
+                    </div>
+                    
+                    <div class="module-item" style="border-color: #48bb78;">
+                        <div class="module-header">
+                            <div class="module-name">R-002: Cleanroom Compatible</div>
+                            <span class="badge complete">Met</span>
+                        </div>
+                        <div style="margin-top: 0.5rem; color: #4a5568;">
+                            <strong>Requirement:</strong> ISO Class 8 cleanroom compatible robots required<br>
+                            <strong>Compliance:</strong> Vendor confirmed ISO Class 7 rated robots available (exceeds requirement)
+                        </div>
+                    </div>
+                    
+                    <div class="module-item" style="border-color: #48bb78;">
+                        <div class="module-header">
+                            <div class="module-name">R-003: SAP Integration</div>
+                            <span class="badge complete">Met</span>
+                        </div>
+                        <div style="margin-top: 0.5rem; color: #4a5568;">
+                            <strong>Requirement:</strong> Integration with SAP EWM mandatory<br>
+                            <strong>Compliance:</strong> WES software includes certified SAP connector with 500+ successful deployments
+                        </div>
+                    </div>
+                    
+                    <div class="module-item" style="border-color: #f59e0b;">
+                        <div class="module-header">
+                            <div class="module-name">R-004: Go-Live Date</div>
+                            <span class="badge progress">Partially Met</span>
+                        </div>
+                        <div style="margin-top: 0.5rem; color: #4a5568;">
+                            <strong>Requirement:</strong> Must be operational by Q4 2026 (9 months)<br>
+                            <strong>Compliance:</strong> Standard timeline is 10-12 months. Expedited 9-month schedule possible with +15% premium and customer commitment to accelerated decision-making
+                        </div>
+                    </div>
+                    
+                    <div class="module-item" style="border-color: #48bb78;">
+                        <div class="module-header">
+                            <div class="module-name">R-005: Documentation</div>
+                            <span class="badge complete">Met</span>
+                        </div>
+                        <div style="margin-top: 0.5rem; color: #4a5568;">
+                            <strong>Requirement:</strong> As-built drawings and O&M manuals required<br>
+                            <strong>Compliance:</strong> Included in Implementation Services scope as standard deliverable
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Approvals Tab -->
+        <div id="tab-approvals" class="tab-content hidden">
+            <div class="card">
+                <div class="card-title" style="margin-bottom: 1.5rem;">Approval Workflow</div>
+                
+                <div class="approval-stage completed">
+                    <div class="stage-header">
+                        <div class="stage-icon completed">✓</div>
+                        <div>
+                            <div class="stage-title">Stage 1: User Input Completion</div>
+                            <div style="font-size: 0.85rem; color: #718096;">All module owners have marked their sections complete</div>
+                        </div>
+                    </div>
+                    <div class="approval-items">
+                        <div class="approval-user">
+                            <div class="user-info">
+                                <div class="user-avatar">SJ</div>
+                                <div>
+                                    <div style="font-weight: 600;">Sarah Johnson</div>
+                                    <div style="font-size: 0.8rem; color: #718096;">Operational Data • Completed Feb 9</div>
+                                </div>
+                            </div>
+                            <span class="badge complete">✓ Complete</span>
+                        </div>
+                        <div class="approval-user">
+                            <div class="user-info">
+                                <div class="user-avatar">MD</div>
+                                <div>
+                                    <div style="font-weight: 600;">Mike Davis</div>
+                                    <div style="font-size: 0.8rem; color: #718096;">Robotic Systems • Completed Feb 10</div>
+                                </div>
+                            </div>
+                            <span class="badge complete">✓ Complete</span>
+                        </div>
+                        <div class="approval-user">
+                            <div class="user-info">
+                                <div class="user-avatar">JS</div>
+                                <div>
+                                    <div style="font-weight: 600;">John Smith</div>
+                                    <div style="font-size: 0.8rem; color: #718096;">Storage & Conveyance • Completed Feb 10</div>
+                                </div>
+                            </div>
+                            <span class="badge complete">✓ Complete</span>
+                        </div>
+                        <div class="approval-user">
+                            <div class="user-info">
+                                <div class="user-avatar">LC</div>
+                                <div>
+                                    <div style="font-weight: 600;">Lisa Chen</div>
+                                    <div style="font-size: 0.8rem; color: #718096;">Controls & Electrical • Completed Feb 11</div>
+                                </div>
+                            </div>
+                            <span class="badge complete">✓ Complete</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="approval-stage active">
+                    <div class="stage-header">
+                        <div class="stage-icon active">2</div>
+                        <div>
+                            <div class="stage-title">Stage 2: Department Manager Review</div>
+                            <div style="font-size: 0.85rem; color: #718096;">Awaiting approval from department managers</div>
+                        </div>
+                    </div>
+                    <div class="approval-items">
+                        <div class="approval-user">
+                            <div class="user-info">
+                                <div class="user-avatar">RB</div>
+                                <div>
+                                    <div style="font-weight: 600;">Robert Brown</div>
+                                    <div style="font-size: 0.8rem; color: #718096;">Engineering Manager • Conveyance & Storage</div>
+                                </div>
+                            </div>
+                            <button class="btn btn-success">Approve</button>
+                        </div>
+                        <div class="approval-user">
+                            <div class="user-info">
+                                <div class="user-avatar">AM</div>
+                                <div>
+                                    <div style="font-weight: 600;">Amanda Miller</div>
+                                    <div style="font-size: 0.8rem; color: #718096;">Controls Manager • Controls & Electrical</div>
+                                </div>
+                            </div>
+                            <button class="btn btn-success">Approve</button>
+                        </div>
+                        <div class="approval-user">
+                            <div class="user-info">
+                                <div class="user-avatar">KL</div>
+                                <div>
+                                    <div style="font-weight: 600;">Kevin Lee</div>
+                                    <div style="font-size: 0.8rem; color: #718096;">PM Manager • Implementation Services</div>
+                                </div>
+                            </div>
+                            <button class="btn btn-success">Approve</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="approval-stage">
+                    <div class="stage-header">
+                        <div class="stage-icon pending">3</div>
+                        <div>
+                            <div class="stage-title">Stage 3: VP/C-Suite Final Approval</div>
+                            <div style="font-size: 0.85rem; color: #718096;">Pending manager approvals</div>
+                        </div>
+                    </div>
+                    <div class="approval-items">
+                        <div class="approval-user">
+                            <div class="user-info">
+                                <div class="user-avatar">DW</div>
+                                <div>
+                                    <div style="font-weight: 600;">David Williams</div>
+                                    <div style="font-size: 0.8rem; color: #718096;">VP of Operations</div>
+                                </div>
+                            </div>
+                            <span class="badge pending">Awaiting</span>
+                        </div>
+                        <div class="approval-user">
+                            <div class="user-info">
+                                <div class="user-avatar">JT</div>
+                                <div>
+                                    <div style="font-weight: 600;">Jennifer Taylor</div>
+                                    <div style="font-size: 0.8rem; color: #718096;">CFO</div>
+                                </div>
+                            </div>
+                            <span class="badge pending">Awaiting</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 1.5rem; padding: 1rem; background: #e0e7ff; border-radius: 8px;">
+                    <strong>Approval Threshold Triggered:</strong> Project cost >$2M requires both VP and CFO approval
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById('tab-' + tabName).classList.remove('hidden');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
